@@ -30,6 +30,9 @@ static void NotifyOwners(ActionInputs inputs)
     Console.WriteLine($"Getting PR files from: {httpClient.BaseAddress}repos/{inputs.Owner}/{inputs.Name}/pulls/{inputs.pullID}/files");
     PRFile[] modifiedFiles = httpClient.GetFromJsonAsync<PRFile[]>($"repos/{inputs.Owner}/{inputs.Name}/pulls/{inputs.pullID}/files").Result;
 
-    List<string> owners = Helpers.GetOwnersWithModifiedFiles(codeowners, modifiedFiles.ToList());
+    List<string> ownersToNotify = Helpers.GetOwnersWithModifiedFiles(codeowners, modifiedFiles.ToList());
+
+    Console.WriteLine($"::set-output name=comment-needed::{(ownersToNotify.Count > 0 ? "true" : "false")}");
+    Console.WriteLine($"::set-output name=comment-content::Notifying code owners: {String.Join(" ", ownersToNotify)}");
 }
 

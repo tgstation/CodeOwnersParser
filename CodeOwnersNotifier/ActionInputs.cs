@@ -27,8 +27,9 @@ namespace CodeOwnersNotifier
             set => ParseAndAssign(value, str => _repositoryName = str);
         }
         [Option('w', "workspace",
-            Required = true,
-            HelpText = "The workspace directory, or repository root directory. Assign from `github.workspace`.")]
+            Required = false,
+            HelpText = "The workspace directory, or repository root directory. Use `/github/workspace`.",
+            Default = "/github/workspace")]
         public string WorkspaceDirectory { get; set; } = null!;
 
         [Option('f', "file",

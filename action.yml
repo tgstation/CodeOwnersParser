@@ -25,6 +25,13 @@ inputs:
     description:
       "ID of the PR to process. Assign from `github.event_path.pull_request.number`."
     required: true
+outputs:
+  comment-needed:
+    description:
+      'true/false to determine if there are codeowners to be notified'
+  comment-content:
+    description:
+      'Comment contend to be used in seperate action e.g github-scripts'
 runs:
   using: 'docker'
   image: 'Dockerfile'
