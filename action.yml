@@ -15,7 +15,8 @@ inputs:
   workspace:
     description:
       "The workspace directory, or repository root directory. Assign from `github.workspace`."
-    required: true
+    required: false
+    default: "/github/workspace"
   file:
     description:
       "Path to the codeowners file. Relative to the repository root."
