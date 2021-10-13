@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CodeOwnersNotifier": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

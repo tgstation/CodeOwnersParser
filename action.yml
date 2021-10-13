@@ -1,0 +1,42 @@
+name: 'CodeOwnersNotifer'
+description: "Github action for notifying codeowners about changes, even if they aren't part of the repo."
+branding:
+  icon: bell
+  color: white
+inputs:
+  owner:
+    description:
+      "The owner, for example: \"dotnet\". Assign from `github.repository_owner`."
+    required: true
+  name:
+    description:
+      "The repository name, for example: \"samples\". Assign from `github.repository`."
+    required: true
+  workspace:
+    description:
+      "The workspace directory, or repository root directory. Assign from `github.workspace`."
+    required: true
+  file:
+    description:
+      "Path to the codeowners file. Relative to the repository root."
+    required: false
+    default: "/.github/CODEOWNERS"
+  pullID:
+    description:
+      "ID of the PR to process. Assign from `github.event_path.pull_request.number`."
+    required: false
+    default: "/.github/CODEOWNERS"
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+  - '-o'
+  - ${{ inputs.owner }}
+  - '-n'
+  - ${{ inputs.name }}
+  - '-w'
+  - ${{ inputs.workspace }}
+  - '-f'
+  - ${{ inputs.file }}
+  - '-p'
+  - ${{ inputs.pullID }}
