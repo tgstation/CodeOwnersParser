@@ -27,6 +27,7 @@ static void NotifyOwners(ActionInputs inputs)
     httpClient.BaseAddress = new Uri("https://api.github.com");
     //Add User-Agent otherwise Github API will return 403
     httpClient.DefaultRequestHeaders.Add("User-Agent", "CodeownersNotifier");
+    Console.WriteLine($"Getting PR files from: {httpClient.BaseAddress}repos/{inputs.Owner}/{inputs.Name}/pulls/{inputs.pullID}/files");
     PRFile[] modifiedFiles = httpClient.GetFromJsonAsync<PRFile[]>($"repos/{inputs.Owner}/{inputs.Name}/pulls/{inputs.pullID}/files").Result;
 
     List<string> owners = Helpers.GetOwnersWithModifiedFiles(codeowners, modifiedFiles.ToList());
