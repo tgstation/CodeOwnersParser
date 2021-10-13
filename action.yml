@@ -24,8 +24,7 @@ inputs:
   pullID:
     description:
       "ID of the PR to process. Assign from `github.event_path.pull_request.number`."
-    required: false
-    default: "/.github/CODEOWNERS"
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
