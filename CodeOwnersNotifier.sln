@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeOwnersNotifier", "CodeO
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{19BE45FC-47E3-41FD-ACD4-782A0EAECF41}"
 	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
 		action.yml = action.yml
+		CodeOwnersNotifier\Dockerfile = CodeOwnersNotifier\Dockerfile
 	EndProjectSection
 EndProject
 Global
