@@ -22,4 +22,4 @@ LABEL com.github.actions.color="white"
 # Relayer the .NET SDK, anew with the build output
 FROM mcr.microsoft.com/dotnet/runtime:5.0
 COPY --from=build-env /out .
-ENTRYPOINT ["dotnet", "CodeOwnersNotifier.dll"]
+ENTRYPOINT ["dotnet", "/CodeOwnersNotifier.dll"]
