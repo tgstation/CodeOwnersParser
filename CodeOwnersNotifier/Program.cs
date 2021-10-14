@@ -38,7 +38,9 @@ static void NotifyOwners(ActionInputs inputs)
     List<string> notifiedOwners = Helpers.getMentionedOwners(PRcomments.ToList(), botname, commentBody);
     List<string> ownersToNotify = ownersWithModifiedFiles.Except(notifiedOwners).ToList();
 
+    Console.WriteLine($"Comment needed: {(ownersToNotify.Count > 0 ? "true" : "false")}");
     Console.WriteLine($"::set-output name=comment-needed::{(ownersToNotify.Count > 0 ? "true" : "false")}");
+    Console.WriteLine($"Owners to notify: {String.Join(" ", ownersToNotify)}");
     Console.WriteLine($"::set-output name=comment-content::{commentBody} {String.Join(" ", ownersToNotify)}");
 }
 
