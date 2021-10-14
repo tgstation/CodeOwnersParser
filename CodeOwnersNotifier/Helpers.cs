@@ -83,9 +83,21 @@ namespace CodeOwnersNotifier
         /// <param name="file">Relative path of the file e.g. /src/CodeOwnerNotifier/Program.cs</param>
         /// <param name="path">Codeowner path to check against e.g. /src/**</param>
         /// <returns></returns>
-        static public bool FileMatchesPath(string file, string path)
+        public static bool FileMatchesPath(string file, string path)
         {
             return true;
+        }
+
+        public static List<string> getMentionedOwners(List<PRComment> comments, string username, string bodyPrefix)
+        {
+            return comments
+                .Where(
+                    comment => comment.user.login == username && comment.body.StartsWith(bodyPrefix))
+                .Select(comment => comment.body[bodyPrefix.Length..])
+                .SelectMany(owners => owners.Split(" ").ToList())
+                .Distinct()
+                .ToList();
+
         }
 
     }
