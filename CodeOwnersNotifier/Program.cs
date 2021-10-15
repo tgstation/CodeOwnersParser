@@ -35,7 +35,7 @@ static void NotifyOwners(ActionInputs inputs)
 
     List<string> ownersWithModifiedFiles = Helpers.GetOwnersWithModifiedFiles(codeowners, modifiedFiles.ToList());
     PRComment[] PRcomments = httpClient.GetFromJsonAsync<PRComment[]>($"repos/{inputs.Owner}/{inputs.Name}/issues/{inputs.pullID}/comments").Result;
-    List<string> notifiedOwners = Helpers.getMentionedOwners(PRcomments.ToList(), botname, commentBody);
+    List<string> notifiedOwners = Helpers.GetMentionedOwners(PRcomments.ToList(), botname, commentBody);
     List<string> ownersToNotify = ownersWithModifiedFiles.Except(notifiedOwners).ToList();
 
     Console.WriteLine($"Comment needed: {(ownersToNotify.Count > 0 ? "true" : "false")}");
