@@ -6,7 +6,6 @@ namespace CodeOwnersNotifier
     public class ActionInputs
     {
         string _repositoryName = null!;
-        string _branchName = null!;
 
         public ActionInputs()
         {
