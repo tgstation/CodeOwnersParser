@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.IO;
-using CodeOwnersParser.Github.Pulls;
 
 namespace CodeOwnersParser
 {
@@ -64,12 +63,12 @@ namespace CodeOwnersParser
         /// <param name="ownersWithFiles">Dictionary containing owners and their paths</param>
         /// <param name="modfiedFiles">Github PR files that were modfied in the PR</param>
         /// <returns></returns>
-        public static List<string> GetOwnersWithModifiedFiles(Dictionary<string, List<string>> ownersWithFiles, List<PRFile> modifiedFiles)
+        public static List<string> GetOwnersWithModifiedFiles(Dictionary<string, List<string>> ownersWithFiles, List<Octokit.PullRequestFile> modifiedFiles)
         {
             return ownersWithFiles
                 .Where(
                     ownerWithFilesKvp => modifiedFiles
-                        .Select(modifiedFile => modifiedFile.filename)
+                        .Select(modifiedFile => modifiedFile.FileName)
                         .Any(
                             filename => ownerWithFilesKvp.Value.Any(
                                 ownerFile => FileMatchesPath(filename, ownerFile))))
@@ -166,12 +165,12 @@ namespace CodeOwnersParser
         /// <param name="username">Name of the user posting the mentions</param>
         /// <param name="bodyPrefix">Prefix of notify comments</param>
         /// <returns></returns>
-        public static List<string> GetMentionedOwners(List<PRComment> comments, string username, string bodyPrefix, string bodySuffix, string separator)
+        public static List<string> GetMentionedOwners(List<Octokit.IssueComment> comments, string username, string bodyPrefix, string bodySuffix, string separator)
         {
             return comments
                 .Where(
-                    comment => comment.user.login == username && comment.body.StartsWith(bodyPrefix) && comment.body.EndsWith(bodySuffix))
-                .Select(comment => comment.body)
+                    comment => comment.User.Login == username && comment.Body.StartsWith(bodyPrefix) && comment.Body.EndsWith(bodySuffix))
+                .Select(comment => comment.Body)
                 .Select (body => body.TrimStart(bodyPrefix).TrimEnd(bodySuffix))
                 .SelectMany(owners => owners.Split(separator))
                 .Distinct()

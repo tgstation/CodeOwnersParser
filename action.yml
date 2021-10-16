@@ -7,13 +7,22 @@ inputs:
   owner:
     description:
       "The owner, for example: \"dotnet\". Assign from `github.repository_owner`."
-    required: true
+    required: false
     default: ${{ github.repository_owner }}
   name:
     description:
       "The repository name, for example: \"samples\". Assign from `github.repository`."
-    required: true
+    required: false
     default: ${{ github.repository }}
+  timeout:
+    description:
+      "Timeout for Github REST API requests."
+    required: false
+    default: '10000'
+  token:
+    description:
+      "Github token used for REST API. Only needed to increase rate limit, may not be provided."
+    required: false
   workspace:
     description:
       "The workspace directory, or repository root directory. Assign from `github.workspace`."
@@ -27,12 +36,12 @@ inputs:
   pullID:
     description:
       "ID of the PR to process. Assign from `github.event.pull_request.number`."
-    required: true
+    required: false
     default: ${{ github.event.pull_request.number }}
   separator:
     description:
       "Separator used if multiple owners are returned. Defaults to space."
-    required: true
+    required: false
     default: ' '
   prefix:
     description:
@@ -62,7 +71,11 @@ runs:
   - '-o'
   - ${{ inputs.owner }}
   - '-n'
-  - ${{ inputs.name }}
+  - ${{ inputs.name }
+  - '-t'
+  - ${{ inputs.timeout }}
+  - '-k'
+  - ${{ inputs.token }}
   - '-w'
   - ${{ inputs.workspace }}
   - '-f'

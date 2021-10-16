@@ -4,9 +4,7 @@ using CommandLine;
 using static CommandLine.Parser;
 using CodeOwnersParser;
 using System.Collections.Generic;
-using System.Net.Http.Json;
-using System.Net.Http;
-using CodeOwnersParser.Github.Pulls;
+using Octokit;
 
 var parser = Default.ParseArguments<ActionInputs>(() => new(), args);
 parser.WithNotParsed(
@@ -24,19 +22,20 @@ static void NotifyOwners(ActionInputs inputs)
     Console.WriteLine($"Parsing codeowner file at: {inputs.WorkspaceDirectory}{inputs.file}");
     Dictionary<string, List<string>> codeowners = Helpers.ParseCodeownersFile(inputs.WorkspaceDirectory + inputs.file);
 
-    HttpClient httpClient = new HttpClient();
-    httpClient.BaseAddress = new Uri("https://api.github.com");
-    //Add User-Agent otherwise Github API will return 403
-    httpClient.DefaultRequestHeaders.Add("User-Agent", "CodeOwnersParser");
-    Console.WriteLine($"Getting PR files from: {httpClient.BaseAddress}repos/{inputs.Owner}/{inputs.Name}/pulls/{inputs.pullID}/files");
-    PRFile[] modifiedFiles = httpClient.GetFromJsonAsync<PRFile[]>($"repos/{inputs.Owner}/{inputs.Name}/pulls/{inputs.pullID}/files").Result;
+    GitHubClient ghclient = new GitHubClient(new ProductHeaderValue("CodeOwnersParser"));
+    ghclient.SetRequestTimeout(TimeSpan.FromMilliseconds(inputs.timeout));
+    if (!String.IsNullOrEmpty(inputs.token))
+        ghclient.Credentials = new Credentials(inputs.token);
 
-    List<string> ownersWithModifiedFiles = Helpers.GetOwnersWithModifiedFiles(codeowners, modifiedFiles.ToList());
+    Console.WriteLine($"Getting PR files for PR with ID {inputs.pullID}");
+    List<Octokit.PullRequestFile> modifiedFiles = new List<Octokit.PullRequestFile>(ghclient.PullRequest.Files(inputs.Owner, inputs.Name, inputs.pullID).Result);
+
+    List<string> ownersWithModifiedFiles = Helpers.GetOwnersWithModifiedFiles(codeowners, modifiedFiles);
     //If we were provided a botname parse its comments and find already notifed owners
     if (inputs.botname is not null)
     {
-        PRComment[] PRcomments = httpClient.GetFromJsonAsync<PRComment[]>($"repos/{inputs.Owner}/{inputs.Name}/issues/{inputs.pullID}/comments").Result;
-        List<string> notifiedOwners = Helpers.GetMentionedOwners(PRcomments.ToList(), inputs.botname, inputs.prefix, inputs.sufix, inputs.separator);
+        List<Octokit.IssueComment> PRcomments = new List<IssueComment>(ghclient.Issue.Comment.GetAllForIssue(inputs.Owner, inputs.Name, inputs.pullID).Result);
+        List<string> notifiedOwners = Helpers.GetMentionedOwners(PRcomments, inputs.botname, inputs.prefix, inputs.sufix, inputs.separator);
         ownersWithModifiedFiles = ownersWithModifiedFiles.Except(notifiedOwners).ToList();
     }
 

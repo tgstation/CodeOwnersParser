@@ -25,11 +25,23 @@ namespace CodeOwnersParser
             get => _repositoryName;
             set => ParseAndAssign(value, str => _repositoryName = str);
         }
+
         [Option('w', "workspace",
             Required = false,
             HelpText = "The workspace directory, or repository root directory. Use `/github/workspace`.",
             Default = "/github/workspace")]
         public string WorkspaceDirectory { get; set; } = null!;
+
+        [Option('t', "timeout",
+            Required = false,
+            HelpText = "The workspace directory, or repository root directory. Use `/github/workspace`.",
+            Default = 10000)]
+        public int timeout { get; set; } = 0;
+
+        [Option('k', "token",
+            Required = false,
+            HelpText = "The workspace directory, or repository root directory. Use `/github/workspace`.")]
+        public string token { get; set; } = null!;
 
         [Option('f', "file",
             Required = false,
@@ -40,7 +52,7 @@ namespace CodeOwnersParser
         [Option('i', "pullID",
            Required = true,
            HelpText = "ID of the PR. Assign from `github.event_path.pull_request.number`.")]
-        public string pullID { get; set; } = null!;
+        public int pullID { get; set; } = 0;
 
         [Option('d', "separator",
            Required = false,
