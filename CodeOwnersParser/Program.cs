@@ -36,7 +36,7 @@ static void NotifyOwners(ActionInputs inputs)
     if (inputs.botname is not null)
     {
         PRComment[] PRcomments = httpClient.GetFromJsonAsync<PRComment[]>($"repos/{inputs.Owner}/{inputs.Name}/issues/{inputs.pullID}/comments").Result;
-        List<string> notifiedOwners = Helpers.GetMentionedOwners(PRcomments.ToList(), inputs.botname, inputs.prefix, inputs.sufix, inputs.seperator);
+        List<string> notifiedOwners = Helpers.GetMentionedOwners(PRcomments.ToList(), inputs.botname, inputs.prefix, inputs.sufix, inputs.separator);
         ownersWithModifiedFiles = ownersWithModifiedFiles.Except(notifiedOwners).ToList();
     }
 
