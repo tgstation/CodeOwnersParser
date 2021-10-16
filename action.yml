@@ -32,12 +32,12 @@ inputs:
     required: true
   prefix:
     description:
-      "Prefix that will be added to formated-owners output + used for finding existing mentions."
+      "Prefix that will be added to owners-formatted output + used for finding existing mentions."
     required: false
     default: ""
   sufix:
     description:
-      "Sufix that will be added to formated-owners output + used for finding existing mentions."
+      "Sufix that will be added to owners-formatted output + used for finding existing mentions."
     required: false
     default: ""
   botname:
@@ -48,7 +48,7 @@ outputs:
   owners:
     description:
       'Raw list of owners, seperated with the separator parameter. Use this to determine if owners were found and as input for other actions.'
-  formated-owners:
+  owners-formatted:
     description:
       'Owners with sufix and prefix paramter added. Use this output as input for comment posting actions.'
 runs:

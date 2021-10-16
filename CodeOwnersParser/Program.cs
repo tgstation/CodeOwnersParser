@@ -45,6 +45,6 @@ static void NotifyOwners(ActionInputs inputs)
     Console.WriteLine($"Owners with file changes: {output}");
     Console.WriteLine($"::set-output name=owners::{output}");
     Console.WriteLine($"Output: {inputs.prefix + output + inputs.sufix}");
-    Console.WriteLine($"::set-output name=formated-owners::{inputs.prefix + output + inputs.sufix}");
+    Console.WriteLine($"::set-output name=owners-formatted::{inputs.prefix + output + inputs.sufix}");
 }
 
