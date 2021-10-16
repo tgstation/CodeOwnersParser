@@ -38,6 +38,12 @@ namespace CodeOwnersParser
             Default = 10000)]
         public int timeout { get; set; } = 0;
 
+        [Option('l', "fileLimit",
+            Required = false,
+            HelpText = "The workspace directory, or repository root directory. Use `/github/workspace`.",
+            Default = 1000)]
+        public int fileLimit { get; set; } = 0;
+
         [Option('k', "token",
             Required = false,
             HelpText = "The workspace directory, or repository root directory. Use `/github/workspace`.")]
