@@ -12,6 +12,8 @@ Name | Required | Default | Description
 ------------ | ------------- | ------------- | -------------
 owner | no | github.repository_owner | Name of repo owner
 name | no | github.repository | Name of the repo
+timeout | no | '10000' | Timeout for Github REST API calls
+token | no | github.token | Token used for REST calls. Only needed to increase rate limits, can be replaced with empty string, but might lead to rate limit errors.
 workspace | no | '/github/workspace' | Location of the repo in the workflow. Normally '/github/workspace' for Docker workflows.
 file | no | '/.github/CODEOWNERS' | Relative location of the CODEOWNERS file in the repo. Useful if you want a separate owner file for this action.
 pullID | no | github.event.pull_request.number | ID of the PR to get modified files from

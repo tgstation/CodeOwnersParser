@@ -23,6 +23,7 @@ inputs:
     description:
       "Github token used for REST API. Only needed to increase rate limit, may not be provided."
     required: false
+    default: ${{ github.token }}
   workspace:
     description:
       "The workspace directory, or repository root directory. Assign from `github.workspace`."
