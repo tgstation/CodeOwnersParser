@@ -46,7 +46,7 @@ namespace CodeOwnersParser
            Required = false,
            HelpText = "String used to seperate multiple owners in the output.",
            Default = " ")]
-        public string seperator { get; set; } = null!;
+        public string separator { get; set; } = null!;
 
         [Option('p', "prefix",
            Required = false,

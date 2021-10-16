@@ -26,9 +26,9 @@ inputs:
     default: "/.github/CODEOWNERS"
   pullID:
     description:
-      "ID of the PR to process. Assign from `github.event_path.pull_request.number`."
+      "ID of the PR to process. Assign from `github.event.pull_request.number`."
     required: true
-    default: ${{ github.event_path.pull_request.number }}
+    default: ${{ github.event.pull_request.number }}
   separator:
     description:
       "Separator used if multiple owners are returned. Defaults to space."

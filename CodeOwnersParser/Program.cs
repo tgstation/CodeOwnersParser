@@ -40,7 +40,7 @@ static void NotifyOwners(ActionInputs inputs)
         ownersWithModifiedFiles = ownersWithModifiedFiles.Except(notifiedOwners).ToList();
     }
 
-    string output = String.Join(inputs.seperator, ownersWithModifiedFiles);
+    string output = String.Join(inputs.separator, ownersWithModifiedFiles);
 
     Console.WriteLine($"Owners with file changes: {output}");
     Console.WriteLine($"::set-output name=owners::{output}");
