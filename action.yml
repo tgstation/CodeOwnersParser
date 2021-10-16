@@ -77,7 +77,7 @@ runs:
   - '-o'
   - ${{ inputs.owner }}
   - '-n'
-  - ${{ inputs.name }
+  - ${{ inputs.name }}
   - '-t'
   - ${{ inputs.timeout }}
   - '-l'
