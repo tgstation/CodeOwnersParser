@@ -8,10 +8,12 @@ inputs:
     description:
       "The owner, for example: \"dotnet\". Assign from `github.repository_owner`."
     required: true
+    default: ${{ github.repository_owner }}
   name:
     description:
       "The repository name, for example: \"samples\". Assign from `github.repository`."
     required: true
+    default: ${{ github.repository }}
   workspace:
     description:
       "The workspace directory, or repository root directory. Assign from `github.workspace`."
@@ -26,6 +28,7 @@ inputs:
     description:
       "ID of the PR to process. Assign from `github.event_path.pull_request.number`."
     required: true
+    default: ${{ github.event_path.pull_request.number }}
   separator:
     description:
       "Separator used if multiple owners are returned. Defaults to space."
