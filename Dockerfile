@@ -7,8 +7,8 @@ RUN dotnet publish ./CodeOwnersParser/CodeOwnersParser.csproj -c Release -o out 
 
 # Label the container
 LABEL maintainer="Gamer025 <33846895+Gamer025@users.noreply.github.com>"
-LABEL repository="https://github.com/Gamer025/CodeOwnerParser"
-LABEL homepage="https://github.com/Gamer025/CodeOwnerParser"
+LABEL repository="https://github.com/Gamer025/CodeOwnersParser"
+LABEL homepage="https://github.com/Gamer025/CodeOwnersParser"
 
 # Label as GitHub action
 LABEL com.github.actions.name="CodeOwnersParser"
