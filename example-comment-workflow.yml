@@ -22,9 +22,6 @@ jobs:
         with:
           #We don't specify the botname so we always get all owners returned, because we are replacing the existing comment
           #If we were appending or always posting a new comment botname should be specified
-          owner: ${{ github.repository_owner }}
-          name: ${{ github.repository }}
-          pullID: ${{ github.event.pull_request.number }}
           prefix: 'Notifying code owners: '
 
       - name: Check if already commented

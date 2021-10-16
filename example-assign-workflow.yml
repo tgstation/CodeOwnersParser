@@ -1,0 +1,29 @@
+#Example worflow for Gamer025/CodeOwnersParser
+
+name: Codeowner Assignment
+
+# Controls when the workflow will run
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  assign-users:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: CodeOwnersParser
+        id: CodeOwnersParser
+        uses: Gamer025/CodeOwnersParser@master
+          
+      #Assign users
+      - name: Assign users
+        if: steps.CodeOwnersParser.outputs.owners != ''
+        uses: Gamer025/AssignUser@master
+        with:
+          separator: ' '
+          users: ${{ steps.CodeOwnersParser.outputs.owners }}
