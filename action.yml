@@ -30,7 +30,7 @@ inputs:
     description:
       "Separator used if multiple owners are returned. Defaults to space."
     required: true
-    default: " "
+    default: ' '
   prefix:
     description:
       "Prefix that will be added to owners-formatted output + used for finding existing mentions."
