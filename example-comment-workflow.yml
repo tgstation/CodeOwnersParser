@@ -1,0 +1,55 @@
+#Example worflow for Gamer025/CodeOwnersParser that posts or edits a comment
+
+name: Codeowner Notification
+
+# Controls when the workflow will run
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  notify-comment:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: CodeOwnersParser
+        id: CodeOwnersParser
+        uses: Gamer025/CodeOwnersParser@master
+        with:
+          #We don't specify the botname so we always get all owners returned, because we are replacing the existing comment
+          #If we were appending or always posting a new comment botname should be specified
+          owner: ${{ github.repository_owner }}
+          name: ${{ github.repository }}
+          pullID: ${{ github.event.pull_request.number }}
+          prefix: 'Notifying code owners: '
+
+      - name: Check if already commented
+        uses: peter-evans/find-comment@v1
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: 'Notifying code owners: '
+      
+      #If no existing comment exists create a new one if there were any owners found
+      - name: Create new comment
+        if: steps.find-comment.outputs.comment-id == '' && steps.CodeOwnersParser.outputs.owners != ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            ${{ steps.CodeOwnersParser.outputs.owners-formatted }}
+      
+      #If existing comment was found replace it
+      - name: Update existing comment
+        if: steps.find-comment.outputs.comment-id != '' && steps.CodeOwnersParser.outputs.owners != ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            ${{ steps.CodeOwnersParser.outputs.owners-formatted }}
