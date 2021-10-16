@@ -71,5 +71,5 @@ runs:
   - ${{ inputs.prefix }}
   - '-s'
   - ${{ inputs.sufix }}
-  - '-d'
+  - '-b'
   - ${{ inputs.botname }}
