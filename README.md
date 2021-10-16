@@ -12,7 +12,7 @@ Name | Required | Default | Description
 ------------ | ------------- | ------------- | -------------
 owner | no | github.repository_owner | Name of repo owner
 name | no | github.repository | Name of the repo
-workspace | '/github/workspace' | Default | Location of the repo in the workflow. Normally '/github/workspace' for Docker workflows.
+workspace | no | '/github/workspace' | Location of the repo in the workflow. Normally '/github/workspace' for Docker workflows.
 file | no | '/.github/CODEOWNERS' | Relative location of the CODEOWNERS file in the repo. Useful if you want a separate owner file for this action.
 pullID | no | github.event.pull_request.number | ID of the PR to get modified files from
 separator | no | ' ' | Separator used for owners-formatted output and for finding already notified owners.
