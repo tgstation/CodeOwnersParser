@@ -26,13 +26,31 @@ inputs:
     description:
       "ID of the PR to process. Assign from `github.event_path.pull_request.number`."
     required: true
+  separator:
+    description:
+      "Separator used if multiple owners are returned. Defaults to space."
+    required: true
+  prefix:
+    description:
+      "Prefix that will be added to formated-owners output + used for finding existing mentions."
+    required: false
+    default: ""
+  sufix:
+    description:
+      "Sufix that will be added to formated-owners output + used for finding existing mentions."
+    required: false
+    default: ""
+  botname:
+    description:
+      "Name of the bot/user that posts notification comments. If this is specified only owners that haven't been mentioned by this user will be output. Should be 'github-actions[bot]'"
+    required: false
 outputs:
-  comment-needed:
+  owners:
     description:
-      'true/false to determine if there are codeowners to be notified'
-  comment-content:
+      'Raw list of owners, seperated with the separator parameter. Use this to determine if owners were found and as input for other actions.'
+  formated-owners:
     description:
-      'Comment contend to be used in seperate action e.g github-scripts'
+      'Owners with sufix and prefix paramter added. Use this output as input for comment posting actions.'
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -45,5 +63,13 @@ runs:
   - ${{ inputs.workspace }}
   - '-f'
   - ${{ inputs.file }}
-  - '-p'
+  - '-i'
   - ${{ inputs.pullID }}
+  - '-d'
+  - ${{ inputs.separator }}
+  - '-p'
+  - ${{ inputs.prefix }}
+  - '-s'
+  - ${{ inputs.sufix }}
+  - '-d'
+  - ${{ inputs.botname }}

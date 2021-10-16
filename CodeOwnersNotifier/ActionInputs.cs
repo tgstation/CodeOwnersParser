@@ -1,7 +1,7 @@
 ﻿using System;
 using CommandLine;
 
-namespace CodeOwnersNotifier
+namespace CodeOwnersParser
 {
     public class ActionInputs
     {
@@ -37,10 +37,33 @@ namespace CodeOwnersNotifier
             Default = "/.github/CODEOWNERS")]
         public string file { get; set; } = null!;
 
-        [Option('p', "pullID",
+        [Option('i', "pullID",
            Required = true,
            HelpText = "ID of the PR. Assign from `github.event_path.pull_request.number`.")]
         public string pullID { get; set; } = null!;
+
+        [Option('d', "separator",
+           Required = false,
+           HelpText = "String used to seperate multiple owners in the output.",
+           Default = " ")]
+        public string seperator { get; set; } = null!;
+
+        [Option('p', "prefix",
+           Required = false,
+           HelpText = "Will be prefixed to the output, useful if output is used in comments action. Also used for finding existing mentions.",
+           Default = "")]
+        public string prefix { get; set; } = null!;
+
+        [Option('s', "sufix",
+           Required = false,
+           HelpText = "Will be prefixed to the output, useful if output is used in comments action. Also used for finding existing mentions.",
+           Default = "")]
+        public string sufix { get; set; } = null!;
+
+        [Option('b', "botname",
+           Required = false,
+           HelpText = "If set existing comments of this user will be parsed to find already mentioned users.")]
+        public string botname { get; set; } = null!;
 
         static void ParseAndAssign(string? value, Action<string> assign)
         {

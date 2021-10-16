@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.IO;
-using CodeOwnersNotifier.Github.Pulls;
+using CodeOwnersParser.Github.Pulls;
 
-namespace CodeOwnersNotifier
+namespace CodeOwnersParser
 {
     static class Helpers
     {
@@ -100,6 +100,8 @@ namespace CodeOwnersNotifier
             //File: ^.*(?<=(\/|^))(Test1\.txt)$
             // ^.*(?<=(\/|^))(Test1\.txt)(?=$|\/).*$
             string regexString = "";
+            //String containing the prepared path (escapeing, replacing etc.). Used so path doesn't get modified because its used as key
+            string preparedPath;
             //Entry ends with / aka only mathches folders not files
             bool folderOnly = false;
             //No slash at the beginning or middle, can match at any depth
@@ -108,7 +110,7 @@ namespace CodeOwnersNotifier
             bool fileMode = false;
 
             //If Regex for entry was already calcualted return that
-            if (pathRegexLookup.TryGetValue(path.TrimStart('/'), out regexString))
+            if (pathRegexLookup.TryGetValue(path, out regexString))
             {
                 return regexString;
             }
@@ -121,28 +123,42 @@ namespace CodeOwnersNotifier
                 fileMode = true;
 
             //Remove leading slash before generating Regex as modified files from PR don't start with slash aka src/code/Program.cs and not /src...
-            path = path.TrimStart('/');
-            Regex.Escape(path);
+            preparedPath = path.TrimStart('/');
 
-            path = path.Replace("*", @"[^\/]*");
-            path = path.Replace("?", @"[^\/]");
+            preparedPath = EscapeOwnerEntry(preparedPath);
 
             if (fileMode)
             {
-                regexString = @$"(?<=(\/|^))({path})(?=$)";
+                regexString = @$"(?<=(\/|^))({preparedPath})(?=$)";
                 pathRegexLookup.Add(path, regexString);
                 return regexString;
             }
 
             else
             {
-                regexString = path;
+                regexString = preparedPath;
                 pathRegexLookup.Add(path, regexString);
                 return regexString;
             }
             
         }
+        /// <summary>
+        /// Formats/escapes a Codeowner entry, e.g replace *,? with the corresponding regex syntax and escape special chars
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        public static string EscapeOwnerEntry (string entry)
+        {
+            //Escape the input
+            entry = Regex.Escape(entry);
 
+            //Replace the new escaped chars with special meaning (?,*,**) with Regex that emualtes gitignore behaviour
+            entry = entry.Replace(@"\*\*", @".?*");
+            entry = entry.Replace(@"\*", @"[^\/]*");
+            entry = entry.Replace(@"\?", @"[^\/]");
+
+            return entry;
+        }
         /// <summary>
         /// Get already mentioned owners from a list of Github comments
         /// </summary>
@@ -150,16 +166,36 @@ namespace CodeOwnersNotifier
         /// <param name="username">Name of the user posting the mentions</param>
         /// <param name="bodyPrefix">Prefix of notify comments</param>
         /// <returns></returns>
-        public static List<string> GetMentionedOwners(List<PRComment> comments, string username, string bodyPrefix)
+        public static List<string> GetMentionedOwners(List<PRComment> comments, string username, string bodyPrefix, string bodySuffix, string separator)
         {
             return comments
                 .Where(
-                    comment => comment.user.login == username && comment.body.StartsWith(bodyPrefix))
-                .Select(comment => comment.body[bodyPrefix.Length..])
-                .SelectMany(owners => owners.Split(" ").ToList())
+                    comment => comment.user.login == username && comment.body.StartsWith(bodyPrefix) && comment.body.EndsWith(bodySuffix))
+                .Select(comment => comment.body)
+                .Select (body => body.TrimStart(bodyPrefix).TrimEnd(bodySuffix))
+                .SelectMany(owners => owners.Split(separator))
                 .Distinct()
                 .ToList();
 
         }
+
+        public static string TrimStart(this string input, string trimString)
+        {
+            if (!String.IsNullOrEmpty(input) && input.StartsWith(trimString))
+            {
+                return input.Remove(0, trimString.Length);
+            }
+            return input;
+        }
+
+        public static string TrimEnd(this string input, string trimString)
+        {
+            if (!String.IsNullOrEmpty(input) && input.EndsWith(trimString))
+            {
+                return input.Remove(input.Length-trimString.Length-1, trimString.Length);
+            }
+            return input;
+        }
+
     }
 }

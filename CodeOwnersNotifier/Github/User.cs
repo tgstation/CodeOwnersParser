@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CodeOwnersNotifier.Github
+namespace CodeOwnersParser.Github
 {
     public class User
     {

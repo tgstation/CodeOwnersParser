@@ -2,11 +2,11 @@
 using System.Linq;
 using CommandLine;
 using static CommandLine.Parser;
-using CodeOwnersNotifier;
+using CodeOwnersParser;
 using System.Collections.Generic;
 using System.Net.Http.Json;
 using System.Net.Http;
-using CodeOwnersNotifier.Github.Pulls;
+using CodeOwnersParser.Github.Pulls;
 
 var parser = Default.ParseArguments<ActionInputs>(() => new(), args);
 parser.WithNotParsed(
@@ -20,8 +20,6 @@ parser.WithParsed(options => NotifyOwners(options));
 
 static void NotifyOwners(ActionInputs inputs)
 {
-    string commentBody = "Notifying code owners: ";
-    string botname = "github-actions[bot]";
 
     Console.WriteLine($"Parsing codeowner file at: {inputs.WorkspaceDirectory}{inputs.file}");
     Dictionary<string, List<string>> codeowners = Helpers.ParseCodeownersFile(inputs.WorkspaceDirectory + inputs.file);
@@ -29,18 +27,24 @@ static void NotifyOwners(ActionInputs inputs)
     HttpClient httpClient = new HttpClient();
     httpClient.BaseAddress = new Uri("https://api.github.com");
     //Add User-Agent otherwise Github API will return 403
-    httpClient.DefaultRequestHeaders.Add("User-Agent", "CodeownersNotifier");
+    httpClient.DefaultRequestHeaders.Add("User-Agent", "CodeOwnersParser");
     Console.WriteLine($"Getting PR files from: {httpClient.BaseAddress}repos/{inputs.Owner}/{inputs.Name}/pulls/{inputs.pullID}/files");
     PRFile[] modifiedFiles = httpClient.GetFromJsonAsync<PRFile[]>($"repos/{inputs.Owner}/{inputs.Name}/pulls/{inputs.pullID}/files").Result;
 
     List<string> ownersWithModifiedFiles = Helpers.GetOwnersWithModifiedFiles(codeowners, modifiedFiles.ToList());
-    PRComment[] PRcomments = httpClient.GetFromJsonAsync<PRComment[]>($"repos/{inputs.Owner}/{inputs.Name}/issues/{inputs.pullID}/comments").Result;
-    List<string> notifiedOwners = Helpers.GetMentionedOwners(PRcomments.ToList(), botname, commentBody);
-    List<string> ownersToNotify = ownersWithModifiedFiles.Except(notifiedOwners).ToList();
+    //If we were provided a botname parse its comments and find already notifed owners
+    if (inputs.botname is not null)
+    {
+        PRComment[] PRcomments = httpClient.GetFromJsonAsync<PRComment[]>($"repos/{inputs.Owner}/{inputs.Name}/issues/{inputs.pullID}/comments").Result;
+        List<string> notifiedOwners = Helpers.GetMentionedOwners(PRcomments.ToList(), inputs.botname, inputs.prefix, inputs.sufix, inputs.seperator);
+        ownersWithModifiedFiles = ownersWithModifiedFiles.Except(notifiedOwners).ToList();
+    }
 
-    Console.WriteLine($"Comment needed: {(ownersToNotify.Count > 0 ? "true" : "false")}");
-    Console.WriteLine($"::set-output name=comment-needed::{(ownersToNotify.Count > 0 ? "true" : "false")}");
-    Console.WriteLine($"Owners to notify: {String.Join(" ", ownersToNotify)}");
-    Console.WriteLine($"::set-output name=comment-content::{commentBody} {String.Join(" ", ownersToNotify)}");
+    string output = String.Join(inputs.seperator, ownersWithModifiedFiles);
+
+    Console.WriteLine($"Owners with file changes: {output}");
+    Console.WriteLine($"::set-output name=owners::{output}");
+    Console.WriteLine($"Output: {inputs.prefix + output + inputs.sufix}");
+    Console.WriteLine($"::set-output name=formated-owners::{inputs.prefix + output + inputs.sufix}");
 }
 

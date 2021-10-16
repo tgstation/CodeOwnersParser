@@ -4,6 +4,8 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <AssemblyName>CodeOwnersParser</AssemblyName>
+    <RootNamespace>CodeOwnersParser</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
