@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CodeOwnersParser": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
