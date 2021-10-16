@@ -18,12 +18,12 @@ jobs:
 
       - name: CodeOwnersParser
         id: CodeOwnersParser
-        uses: Gamer025/CodeOwnersParser@master
+        uses: Gamer025/CodeOwnersParser@v1
           
       #Assign users
       - name: Assign users
         if: steps.CodeOwnersParser.outputs.owners != ''
-        uses: Gamer025/AssignUser@master
+        uses: Gamer025/AssignUser@v1
         with:
           separator: ' '
           users: ${{ steps.CodeOwnersParser.outputs.owners }}
