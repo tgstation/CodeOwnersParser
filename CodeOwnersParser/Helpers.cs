@@ -152,7 +152,7 @@ namespace CodeOwnersParser
             entry = Regex.Escape(entry);
 
             //Replace the new escaped chars with special meaning (?,*,**) with Regex that emualtes gitignore behaviour
-            entry = entry.Replace(@"\*\*", @".?*");
+            entry = entry.Replace(@"\*\*", @".*");
             entry = entry.Replace(@"\*", @"[^\/]*");
             entry = entry.Replace(@"\?", @"[^\/]");
 
