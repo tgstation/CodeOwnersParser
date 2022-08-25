@@ -19,7 +19,7 @@ parser.WithParsed(options => NotifyOwners(options));
 
 static void NotifyOwners(ActionInputs inputs)
 {
-
+    Console.WriteLine($"CodeOwnersParser Version {System.Reflection.Assembly.GetEntryAssembly().GetName().Version}");
     Console.WriteLine($"Parsing codeowner file at: {inputs.WorkspaceDirectory}{inputs.file}");
     Dictionary<string, List<string>> codeowners = Helpers.ParseCodeownersFile(inputs.WorkspaceDirectory + inputs.file);
 
