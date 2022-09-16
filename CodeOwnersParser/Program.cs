@@ -19,7 +19,7 @@ parser.WithParsed(options => NotifyOwners(options));
 
 static void NotifyOwners(ActionInputs inputs)
 {
-
+    Console.WriteLine($"CodeOwnersParser Version {System.Reflection.Assembly.GetEntryAssembly().GetName().Version}");
     Console.WriteLine($"Parsing codeowner file at: {inputs.WorkspaceDirectory}{inputs.file}");
     Dictionary<string, List<string>> codeowners = Helpers.ParseCodeownersFile(inputs.WorkspaceDirectory + inputs.file);
 
@@ -36,7 +36,11 @@ static void NotifyOwners(ActionInputs inputs)
     }
 
     Console.WriteLine($"Getting PR files for PR with ID {inputs.pullID}");
-    var modifiedFilesTask = ghclient.PullRequest.Files(inputs.Owner, inputs.Name, inputs.pullID);
+    var batchPagination = new ApiOptions
+    {
+        PageSize = 100
+    };
+    var modifiedFilesTask = ghclient.PullRequest.Files(inputs.Owner, inputs.Name, inputs.pullID, batchPagination);
     List<Octokit.PullRequestFile> modifiedFiles;
     if (modifiedFilesTask.Wait(inputs.timeout))
     {
