@@ -6,14 +6,14 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <AssemblyName>CodeOwnersParser</AssemblyName>
     <RootNamespace>CodeOwnersParser</RootNamespace>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
-    <PackageReference Include="Octokit" Version="3.0.0" />
+    <PackageReference Include="Octokit" Version="4.0.1" />
   </ItemGroup>
 
 </Project>
