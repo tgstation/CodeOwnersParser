@@ -5,7 +5,7 @@ using static CommandLine.Parser;
 using CodeOwnersParser;
 using System.Collections.Generic;
 using Octokit;
-using System.Threading.Tasks;
+using System.IO;
 
 var parser = Default.ParseArguments<ActionInputs>(() => new(), args);
 parser.WithNotParsed(
@@ -70,11 +70,10 @@ static void NotifyOwners(ActionInputs inputs)
         ownersWithModifiedFiles = ownersWithModifiedFiles.Except(notifiedOwners).ToList();
     }
 
-    string output = String.Join(inputs.separator, ownersWithModifiedFiles);
-
-    Console.WriteLine($"Owners with file changes: {output}");
-    Console.WriteLine($"::set-output name=owners::{output}");
-    Console.WriteLine($"Output: {inputs.prefix + output + inputs.sufix}");
-    Console.WriteLine($"::set-output name=owners-formatted::{inputs.prefix + output + inputs.sufix}");
+    string owners = String.Join(inputs.separator, ownersWithModifiedFiles);
+    string[] output = { $"owners={owners}", $"owners-formatted={inputs.prefix + owners + inputs.sufix}"};
+    Console.WriteLine($"Owners: {output[0]}");
+    Console.WriteLine($"Owners-formatted: {output[1]}");
+    File.WriteAllLines(Environment.GetEnvironmentVariable("GITHUB_OUTPUT"), output);
 }
 
